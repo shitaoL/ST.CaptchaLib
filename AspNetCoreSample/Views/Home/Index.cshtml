@@ -1,0 +1,41 @@
+﻿@model AspNetCoreSample.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row" style="margin-top:50px;">
+    <div class="col-md-offset-3 col-md-6">
+        <form class="form-auth-small" asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label sr-only"></label>
+                <input asp-for="UserName" class="form-control" placeholder="Username">
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label sr-only"></label>
+                <input asp-for="Password" class="form-control" placeholder="Password">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Captcha" class="control-label sr-only"></label>
+                <div class="form-inline">
+                    <input asp-for="Captcha" class="form-control" placeholder="Captcha">
+                    <img id="_captcha" style="cursor: pointer;" src="@Url.Action("Captcha", "Home")" />
+                </div>
+                <span asp-validation-for="Captcha" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {    
+    <script>
+        $(function () {
+            $("#_captcha").bind("click", function () {
+                this.src = "@Url.Action("Captcha", "Home")?time=" + (new Date()).getTime();
+            });
+        });
+    </script>
+}

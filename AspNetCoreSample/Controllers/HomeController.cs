@@ -12,6 +12,8 @@ namespace AspNetCoreSample.Controllers
 {
     public class HomeController : Controller
     {
+        private const string _cookieCaptchaKey="cookie.captcha.key";
+
         public IActionResult Index()
         {
             return View();
@@ -22,8 +24,14 @@ namespace AspNetCoreSample.Controllers
         {
             if (ModelState.IsValid)
             {
+                string hashCaptcha = string.Empty;
+                HttpContext.Request.Cookies.TryGetValue(_cookieCaptchaKey, out hashCaptcha);
+                if (!CaptchaUtil.VerifyCaptcha(model.Captcha, hashCaptcha))
+                {
+                    //the captach is not correct
+                }
             }
-            return View();
+            return View(model);
         }
 
         public IActionResult About()
@@ -59,7 +67,7 @@ namespace AspNetCoreSample.Controllers
             {
                 string captcha = CaptchaUtil.GetCaptcha(4);
                 byte[] _img = CaptchaUtil.GetCaptchaImageBytes(captcha, 100, 30);
-                HttpContext.Response.Cookies.Append("cookie.captcha.key", captcha.ToUpper(), new CookieOptions //captcha.ToUpper() shdould by encrypted, I omitted here.
+                HttpContext.Response.Cookies.Append(_cookieCaptchaKey, CaptchaUtil.HashCaptcha(captcha), new CookieOptions
                 {
                     Expires = DateTime.Now.AddMinutes(1)
                 });

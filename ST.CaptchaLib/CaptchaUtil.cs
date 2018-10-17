@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace ST.CaptchaLib
 {
@@ -31,6 +33,7 @@ namespace ST.CaptchaLib
 
         public static string GetCaptcha(string randomChars, int length = _length)
         {
+            if (randomChars == null) { throw new ArgumentNullException(nameof(randomChars)); }
             char[] captcha = new char[length];
             char[] dic = randomChars.ToArray();
             Random random = new Random();
@@ -51,6 +54,8 @@ namespace ST.CaptchaLib
         /// <returns></returns>
         public static byte[] GetCaptchaImageBytes(string captcha, int width = 120, int height = 30)
         {
+            if (captcha == null) { throw new ArgumentNullException(nameof(captcha)); }
+
             Font font = new Font("Arial", 14, FontStyle.Bold);
             Bitmap bitmap = new Bitmap(width, height);
             Graphics gph = Graphics.FromImage(bitmap);
@@ -91,5 +96,32 @@ namespace ST.CaptchaLib
             return stream.ToArray();
         }
 
+        /// <summary>
+        /// encrypt captcha
+        /// </summary>
+        /// <param name="captcha">captcha string</param>
+        /// <returns></returns>
+        public static string HashCaptcha(string captcha)
+        {
+            if (captcha == null) { throw new ArgumentNullException(nameof(captcha)); }
+            captcha = captcha.ToUpper();
+            string salt = "shitao#@xymn";
+            using (var obj = new SHA256CryptoServiceProvider())
+            {
+                byte[] bt = obj.ComputeHash(Encoding.UTF8.GetBytes(captcha + salt));
+                return Convert.ToBase64String(bt);
+            }
+        }
+
+        /// <summary>
+        /// verify captcha
+        /// </summary>
+        /// <param name="captcha">captcha string</param>
+        /// <param name="hashCaptcha">hash daptcha string</param>
+        /// <returns></returns>
+        public static bool VerifyCaptcha(string captcha, string hashCaptcha)
+        {
+            return HashCaptcha(captcha) == hashCaptcha;
+        }
     }
 }

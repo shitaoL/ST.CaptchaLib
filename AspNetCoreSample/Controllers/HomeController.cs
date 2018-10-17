@@ -22,7 +22,6 @@ namespace AspNetCoreSample.Controllers
         {
             if (ModelState.IsValid)
             {
-
             }
             return View();
         }

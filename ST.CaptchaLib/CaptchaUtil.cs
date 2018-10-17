@@ -30,7 +30,6 @@ namespace ST.CaptchaLib
         /// <param name="randomChars">random chars, for example:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890</param>
         /// <param name="length">captcha length</param>
         /// <returns></returns>
-
         public static string GetCaptcha(string randomChars, int length = _length)
         {
             if (randomChars == null) { throw new ArgumentNullException(nameof(randomChars)); }

@@ -1,8 +1,7 @@
 # ST.CaptchaLib
-
 Generate Captcha
 
-Dependencies:
+# Dependencies:
 
 .NET Standard 2.0
 
